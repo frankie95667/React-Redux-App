@@ -102,7 +102,7 @@ function MapChart({ setTooltipContent }) {
   } else {
     return (
       <>
-        <CircularProgress style={{width: '100px', height: '100px', position: 'absolute', top: '40%'}} />
+        <CircularProgress style={{width: '5%', height: 'auto', position: 'absolute', top: '40%'}} />
         <h1>Total Confirmed Cases of COVID-19 in the US</h1>
         
         <ComposableMap data-tip="" projection="geoAlbersUsa">
