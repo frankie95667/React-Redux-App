@@ -1,23 +1,9 @@
 import React, { useEffect, isValidElement, memo } from "react";
 import { useSelector } from "react-redux";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
-import { scaleQuantize } from "d3-scale";
+import { scaleQuantize, scaleLinear, scaleQuantile } from "d3-scale";
 
 const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
-
-const colorScale = scaleQuantize()
-  .domain([0, 5000])
-  .range([
-    "#D6D6DA",
-    "#D98880",
-    "#CD6155",
-    "#C0392B",
-    "#A93226",
-    "#922B21",
-    "#7B241C",
-    "#641E16",
-    '#561C15'
-  ]);
 
 function MapChart({ setTooltipContent }) {
   const data = useSelector(state => state.covid19Reducer.countries);
@@ -25,6 +11,19 @@ function MapChart({ setTooltipContent }) {
   useEffect(() => {
     console.log(data);
   }, [data]);
+
+  const colorScale = scaleLinear()
+  .domain([0, 5000])
+  .range([
+    "#D98880",
+    // "#CD6155",
+    // "#C0392B",
+    // "#A93226",
+    // "#922B21",
+    // "#7B241C",
+    // "#641E16",
+    '#561C15'
+  ]);
 
   if (data) {
     return (
@@ -42,11 +41,11 @@ function MapChart({ setTooltipContent }) {
                 <Geography
                   key={geo.rsmKey}
                   geography={geo}
-                  fill={colorScale(cur ? cur.Cases : "#EEE")}
+                  fill={cur && cur.Cases ? colorScale(cur ? cur.Cases : 0) : '#eee'}
                   onMouseEnter={() => {
                     const { NAME } = geo.properties;
                     setTooltipContent({
-                      content: `${cur.Province}: ${cur.Cases}`,
+                      content: cur && cur.Cases ? `${cur.Province}: ${cur.Cases}` : `Georgia: 0`,
                       isVisible: true
                     });
                   }}
