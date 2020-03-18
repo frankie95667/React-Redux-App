@@ -85,7 +85,7 @@ function MapChart({ setTooltipContent }) {
           <div>
             <ScaleWrapper>
               <p>0</p>
-            <p>{data["New York"].Cases}</p>
+            <p>5000+</p>
             </ScaleWrapper>
             <FlexWrapper>
               <ColorSquare color={colorScale(0)} />
