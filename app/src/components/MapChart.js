@@ -127,7 +127,7 @@ function MapChart({ setTooltipContent }) {
           <div>
             <ScaleWrapper>
               <p>0</p>
-            <p>5000</p>
+            <p>5000+</p>
             </ScaleWrapper>
             <FlexWrapper>
               <ColorSquare color={colorScale(0)} />
