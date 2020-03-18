@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSummary } from './actions/covid19Actions';
 import MapChart from './components/MapChart';
+import MapScale from './components/MapScale';
 import ReactTooltip from 'react-sticky-mouse-tooltip';
 
 import './App.css';
@@ -22,7 +23,6 @@ function App() {
   return (
     <div className="App">
       <MapChart setTooltipContent={setContent}/>
-      <ReactTooltip effect='float' place='top'><p>{content.content}</p></ReactTooltip>
     </div>
   );
 }
