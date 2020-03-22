@@ -62,6 +62,7 @@ export const setSummary = () => dispatch => {
     .then(res => {
       // dispatch({type: SET_SUMMARY, payload: res.data})
       let obj = {};
+      console.log(res.data);
       res.data.forEach(item => {
         let name = item.Province;
 
@@ -95,6 +96,6 @@ export const setSummary = () => dispatch => {
       });
     })
     .catch(err => {
-      console.log(err.message);
+      console.error(err.message);
     });
 };

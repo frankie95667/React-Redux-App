@@ -1,4 +1,4 @@
-import React, { useEffect, isValidElement, memo } from "react";
+import React, { useEffect, isValidElement, memo, useState } from "react";
 import { useSelector } from "react-redux";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { scaleLinear } from "d3-scale";
@@ -7,15 +7,29 @@ import styled from "styled-components";
 
 const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
-function MapChart({ setTooltipContent }) {
+function MapChart({setTooltipContent}) {
   const data = useSelector(state => state.covid19Reducer.countries);
+  // const [tooltipContent, setTooltipContent] = useState({
+  //   content: '',
+  //   isVisible: false
+  // });
+  const [max, setMax] = useState();
 
   useEffect(() => {
-    console.log(data);
+    if(data){
+      let largestValue;
+      for(const state in data){
+        if(!largestValue || largestValue < data[state].Cases){
+          largestValue = data[state].Cases;
+        }
+      }
+      setMax(largestValue);
+    }
   }, [data]);
 
-  const colorScale = scaleLinear()
-    .domain([0, 6000])
+  const colorScale = (value) => {
+    const color = scaleLinear()
+    .domain([0, max ? max : 5000])
     .range([
       "#D98880",
       // "#CD6155",
@@ -26,6 +40,8 @@ function MapChart({ setTooltipContent }) {
       // "#641E16",
       "#561C15"
     ]);
+   return(color(value))
+  }
 
   if (data) {
     return (
@@ -42,6 +58,7 @@ function MapChart({ setTooltipContent }) {
                   }
                 }
                 return (
+                  <>
                   <Geography
                     key={geo.rsmKey}
                     geography={geo}
@@ -50,19 +67,18 @@ function MapChart({ setTooltipContent }) {
                         ? colorScale(cur ? cur.Cases : 0)
                         : "#eee"
                     }
-                    onMouseEnter={() => {
+                    onMouseEnter={(e) => {
                       const { NAME } = geo.properties;
                       setTooltipContent({
-                        content:
-                          cur && cur.Cases
-                            ? `${cur.Province}: ${cur.Cases}`
-                            : `Georgia: 0`,
-                        isVisible: true
+                        state: cur && cur.Province ? cur.Province : 'Georgia',
+                        confirmed: cur && cur.Cases ? cur.Cases : 0,
+                        isVisible: true,
                       });
                     }}
-                    onMouseLeave={() => {
+                    onMouseLeave={(e) => {
                       setTooltipContent({
-                        content: "",
+                        state: null,
+                        confirmed: null,
                         isVisible: false
                       });
                     }}
@@ -73,6 +89,7 @@ function MapChart({ setTooltipContent }) {
                       }
                     }}
                   />
+                  </>
                 );
               })
             }
@@ -85,15 +102,15 @@ function MapChart({ setTooltipContent }) {
           <div>
             <ScaleWrapper>
               <p>0</p>
-            <p>5000+</p>
+          <p>{max}+</p>
             </ScaleWrapper>
             <FlexWrapper>
               <ColorSquare color={colorScale(0)} />
-              <ColorSquare color={colorScale(100)} />
-              <ColorSquare color={colorScale(500)} />
-              <ColorSquare color={colorScale(1000)} />
-              <ColorSquare color={colorScale(2000)} />
-              <ColorSquare color={colorScale(5000)} />
+              <ColorSquare color={colorScale(max*(1/5))} />
+              <ColorSquare color={colorScale(max*(2/5))} />
+              <ColorSquare color={colorScale(max*(3/5))} />
+              <ColorSquare color={colorScale(max*(4/5))} />
+              <ColorSquare color={colorScale(max)} />
             </FlexWrapper>
           </div>
         </ScaleAndColorWrapper>
@@ -127,7 +144,7 @@ function MapChart({ setTooltipContent }) {
           <div>
             <ScaleWrapper>
               <p>0</p>
-            <p>5000+</p>
+          <p>5000+</p>
             </ScaleWrapper>
             <FlexWrapper>
               <ColorSquare color={colorScale(0)} />
