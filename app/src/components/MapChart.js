@@ -13,7 +13,7 @@ function MapChart({setTooltipContent}) {
   //   content: '',
   //   isVisible: false
   // });
-  const [max, setMax] = useState();
+  const [max, setMax] = useState(6000);
 
   useEffect(() => {
     if(data){
@@ -31,16 +31,30 @@ function MapChart({setTooltipContent}) {
     const color = scaleLinear()
     .domain([0, max ? max : 5000])
     .range([
-      "#D98880",
+      "#5fd4d8",
       // "#CD6155",
       // "#C0392B",
       // "#A93226",
       // "#922B21",
       // "#7B241C",
       // "#641E16",
-      "#561C15"
+      "#1173d6"
     ]);
    return(color(value))
+  // console.log(value);
+  //   if(0 <= value && value <= max*(1/5)){
+  //     return '#5fd4d8'
+  //   } else if(max*(1/5) < value && value <= max*(2/5)){
+  //     return '#5fb6d8';
+  //   } else if(max*(2/5) < value && value <= max*(3/5)){
+  //     return '#5f9cd8';
+  //   } else if(max*(3/5) < value && value <= max*(4/5)){
+  //     return '#3687d8';
+  //   } else if(max*(4/5) < value && value <= max*(5/5)){
+  //     return '#1173d6';
+  //   } else {
+  //     return '#eee';
+  //   }
   }
 
   if (data) {
@@ -105,12 +119,11 @@ function MapChart({setTooltipContent}) {
           <p>{max}+</p>
             </ScaleWrapper>
             <FlexWrapper>
-              <ColorSquare color={colorScale(0)} />
               <ColorSquare color={colorScale(max*(1/5))} />
               <ColorSquare color={colorScale(max*(2/5))} />
               <ColorSquare color={colorScale(max*(3/5))} />
               <ColorSquare color={colorScale(max*(4/5))} />
-              <ColorSquare color={colorScale(max)} />
+              <ColorSquare color={colorScale(max*(5/5))} />
             </FlexWrapper>
           </div>
         </ScaleAndColorWrapper>
@@ -147,7 +160,6 @@ function MapChart({setTooltipContent}) {
           <p>5000+</p>
             </ScaleWrapper>
             <FlexWrapper>
-              <ColorSquare color={colorScale(0)} />
               <ColorSquare color={colorScale(100)} />
               <ColorSquare color={colorScale(500)} />
               <ColorSquare color={colorScale(1000)} />

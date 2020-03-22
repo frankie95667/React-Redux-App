@@ -23,7 +23,7 @@ function App() {
   return (
     <div className="App">
       <MapChart setTooltipContent={setContent} />
-      <ReactTooltip offsetY={15} visible={content.isVisible}>
+      <ReactTooltip offsetY={20} offsetX={20} visible={content.isVisible}>
         <Tooltip>
           <h3>{content.state}</h3>
           <p>Confirmed: {content.confirmed}</p>
