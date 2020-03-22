@@ -26,7 +26,7 @@ function App() {
       <ReactTooltip offsetY={15} visible={content.isVisible}>
         <Tooltip>
           <h3>{content.state}</h3>
-          <p>Cases: {content.confirmed}</p>
+          <p>Confirmed: {content.confirmed}</p>
         </Tooltip>
       </ReactTooltip>
     </div>
