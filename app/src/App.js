@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSummary } from "./actions/covid19Actions";
+import { setConfirmed } from "./actions/covid19Actions";
 import MapChart from "./components/MapChart";
 import ReactTooltip from "react-sticky-mouse-tooltip";
 import styled from "styled-components";
@@ -17,7 +17,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setSummary());
+    dispatch(setConfirmed());
   }, []);
 
   return (

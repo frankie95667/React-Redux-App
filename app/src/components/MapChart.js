@@ -9,18 +9,15 @@ const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
 function MapChart({setTooltipContent}) {
   const data = useSelector(state => state.covid19Reducer.countries);
-  // const [tooltipContent, setTooltipContent] = useState({
-  //   content: '',
-  //   isVisible: false
-  // });
   const [max, setMax] = useState(6000);
 
   useEffect(() => {
     if(data){
+      console.log(data);
       let largestValue;
       for(const state in data){
-        if(!largestValue || largestValue < data[state].Cases){
-          largestValue = data[state].Cases;
+        if(!largestValue || (data[state].Confirmed && largestValue < data[state].Confirmed.Cases)){
+          largestValue = data[state].Confirmed.Cases;
         }
       }
       setMax(largestValue);
@@ -32,12 +29,6 @@ function MapChart({setTooltipContent}) {
     .domain([0, max ? max : 5000])
     .range([
       "#5fd4d8",
-      // "#CD6155",
-      // "#C0392B",
-      // "#A93226",
-      // "#922B21",
-      // "#7B241C",
-      // "#641E16",
       "#1173d6"
     ]);
    return(color(value))
@@ -68,7 +59,7 @@ function MapChart({setTooltipContent}) {
                 let cur = null;
                 for (const prop in data) {
                   if (geo.id === data[prop].id) {
-                    cur = data[prop];
+                    cur = data[prop].Confirmed;
                   }
                 }
                 return (

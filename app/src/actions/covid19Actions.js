@@ -56,13 +56,12 @@ const STATE_TO_FIPS = {
   Wyoming: "56"
 };
 
-export const setSummary = () => dispatch => {
+export const setConfirmed = () => dispatch => {
   axios
     .get("https://api.covid19api.com/country/us/status/confirmed")
     .then(res => {
       // dispatch({type: SET_SUMMARY, payload: res.data})
       let obj = {};
-      console.log(res.data);
       res.data.forEach(item => {
         let name = item.Province;
 
@@ -70,12 +69,15 @@ export const setSummary = () => dispatch => {
           if (!obj[name]) {
             obj = {
               ...obj,
-              [name]: item
+              [name]: {
+                ...obj[name],
+                Confirmed: item
+              }
             };
           } else {
-            obj[name] = {
+            obj[name].Confirmed = {
               ...item,
-              Cases: obj[name].Cases + item.Cases
+              Cases: obj[name].Confirmed.Cases + item.Cases
             };
           }
         }
