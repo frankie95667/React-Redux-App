@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setConfirmed, setDeaths } from "./actions/covid19Actions";
+import {
+  setConfirmed,
+  setDeaths,
+  setRecovered
+} from "./actions/covid19Actions";
 import MapChart from "./components/MapChart";
 import ReactTooltip from "react-sticky-mouse-tooltip";
 import styled from "styled-components";
@@ -15,7 +19,9 @@ function App() {
     isVisible: false
   });
   const data = useSelector(state => state.covid19Reducer.countries);
-  const isFinished = useSelector(state => state.covid19Reducer.isFinished);
+  const { confirmedFinished, deathsFinished, recoveredFinished } = useSelector(
+    state => state.covid19Reducer
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,10 +29,15 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if(data && !isFinished){
+    if (data && !deathsFinished) {
       dispatch(setDeaths(data));
     }
-  },[data])
+    if (data && !recoveredFinished) {
+      dispatch(setRecovered(data));
+    }
+  }, [data]);
+
+  useEffect(() => {});
 
   return (
     <div className="App">
@@ -36,6 +47,7 @@ function App() {
           <h3>{content.state}</h3>
           <p>Confirmed: {content.confirmed}</p>
           <p>Deaths: {content.deaths}</p>
+          <p>Recovered: {content.recovered}</p>
         </Tooltip>
       </ReactTooltip>
     </div>

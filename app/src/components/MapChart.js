@@ -9,12 +9,18 @@ const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
 function MapChart({setTooltipContent}) {
   const data = useSelector(state => state.covid19Reducer.countries);
-  const isFinished = useSelector(state => state.covid19Reducer.isFinished);
+  const { confirmedFinished, deathsFinished, recoveredFinished } = useSelector(
+    state => state.covid19Reducer
+  );
+  const [total, setTotal] = useState({
+    Confirmed: 0,
+    Deaths: 0,
+    Recovered: 0
+  })
   const [max, setMax] = useState(6000);
 
   useEffect(() => {
     if(data){
-      console.log(data);
       let largestValue;
       for(const state in data){
         if(!largestValue || (data[state].Confirmed && largestValue < data[state].Confirmed.Cases)){
@@ -23,7 +29,26 @@ function MapChart({setTooltipContent}) {
       }
       setMax(largestValue);
     }
+    if(data && confirmedFinished && deathsFinished && recoveredFinished){
+      totalCount();
+    }
   }, [data]);
+
+  const totalCount = () => {
+    const obj = {
+      Deaths: 0,
+      Confirmed: 0,
+      Recovered: 0
+    }
+
+    for(const state in data){
+      obj.Deaths += data[state].Deaths ? data[state].Deaths.Cases : 0;
+      obj.Confirmed += data[state].Confirmed ? data[state].Confirmed.Cases : 0;
+      obj.Recovered += data[state].Recovered ? data[state].Recovered.Cases : 0;
+    }
+
+    setTotal(obj);
+  }
 
   const colorScale = (value) => {
     const color = scaleLinear()
@@ -49,10 +74,13 @@ function MapChart({setTooltipContent}) {
   //   }
   }
 
-  if (data && isFinished) {
+  if (data && confirmedFinished && deathsFinished && recoveredFinished) {
     return (
       <>
         <h1>Total Confirmed Cases of COVID-19 in the US</h1>
+        <h2>Total Confirmed: {total.Confirmed}</h2>
+        <h2>Total Deaths: {total.Deaths}</h2>
+        <h2>Total Recovered: {total.Recovered}</h2>
         <ComposableMap data-tip="" projection="geoAlbersUsa">
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
@@ -79,6 +107,7 @@ function MapChart({setTooltipContent}) {
                         state: cur && cur.Confirmed ? cur.Confirmed.Province : 'Georgia',
                         confirmed: cur && cur.Confirmed ? cur.Confirmed.Cases : 0,
                         deaths: cur && cur.Deaths ? cur.Deaths.Cases : 0,
+                        recovered: cur && cur.Recovered ? cur.Recovered.Cases : 0,
                         isVisible: true,
                       });
                     }}
@@ -87,6 +116,7 @@ function MapChart({setTooltipContent}) {
                         state: null,
                         confirmed: null,
                         deaths: null,
+                        recovered: null,
                         isVisible: false
                       });
                     }}

@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useSelector } from 'react-redux';
 const fips = require("fips-county-codes");
 
 export const SET_CONFIRMED = "SET_CONFIRMED";
 export const SET_DEATHS = "SET_DEATHS";
+export const SET_RECOVERED = "SET_RECOVERED";
+
 const STATE_TO_FIPS = {
   Alabama: "01",
   Alaska: "02",
@@ -123,6 +124,38 @@ export const setDeaths = (obj) => dispatch => {
       console.log(obj);
       dispatch({
         type: SET_DEATHS,
+        payload: obj
+      });
+    })
+    .catch(err => {
+      console.error(err.message);
+    });
+};
+
+export const setRecovered = (obj) => dispatch => {
+  axios
+    .get("https://api.covid19api.com/country/us/status/recovered")
+    .then(res => {
+      // dispatch({type: SET_SUMMARY, payload: res.data})
+      // let obj = {};
+      res.data.forEach(item => {
+        let name = item.Province;
+
+        if (!name.includes("County") && name.split(", ").length <= 1) {
+          if (item.Cases) {
+            obj = {
+              ...obj,
+              [name]: {
+                ...obj[name],
+                Recovered: item
+              }
+            };
+          }
+        }
+      });
+      console.log(obj);
+      dispatch({
+        type: SET_RECOVERED,
         payload: obj
       });
     })
