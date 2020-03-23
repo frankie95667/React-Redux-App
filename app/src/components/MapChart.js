@@ -9,6 +9,7 @@ const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
 function MapChart({setTooltipContent}) {
   const data = useSelector(state => state.covid19Reducer.countries);
+  const isFinished = useSelector(state => state.covid19Reducer.isFinished);
   const [max, setMax] = useState(6000);
 
   useEffect(() => {
@@ -48,7 +49,7 @@ function MapChart({setTooltipContent}) {
   //   }
   }
 
-  if (data) {
+  if (data && isFinished) {
     return (
       <>
         <h1>Total Confirmed Cases of COVID-19 in the US</h1>
@@ -59,7 +60,7 @@ function MapChart({setTooltipContent}) {
                 let cur = null;
                 for (const prop in data) {
                   if (geo.id === data[prop].id) {
-                    cur = data[prop].Confirmed;
+                    cur = data[prop];
                   }
                 }
                 return (
@@ -68,15 +69,16 @@ function MapChart({setTooltipContent}) {
                     key={geo.rsmKey}
                     geography={geo}
                     fill={
-                      cur && cur.Cases
-                        ? colorScale(cur ? cur.Cases : 0)
+                      cur && cur.Confirmed
+                        ? colorScale(cur ? cur.Confirmed.Cases : 0)
                         : "#eee"
                     }
                     onMouseEnter={(e) => {
                       const { NAME } = geo.properties;
                       setTooltipContent({
-                        state: cur && cur.Province ? cur.Province : 'Georgia',
-                        confirmed: cur && cur.Cases ? cur.Cases : 0,
+                        state: cur && cur.Confirmed ? cur.Confirmed.Province : 'Georgia',
+                        confirmed: cur && cur.Confirmed ? cur.Confirmed.Cases : 0,
+                        deaths: cur && cur.Deaths ? cur.Deaths.Cases : 0,
                         isVisible: true,
                       });
                     }}
@@ -84,6 +86,7 @@ function MapChart({setTooltipContent}) {
                       setTooltipContent({
                         state: null,
                         confirmed: null,
+                        deaths: null,
                         isVisible: false
                       });
                     }}
