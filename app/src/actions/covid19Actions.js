@@ -66,7 +66,7 @@ export const setConfirmed = () => dispatch => {
         let name = item.Province;
 
         if (!name.includes("County") && name.split(", ").length <= 1) {
-          if (!obj[name]) {
+          if (item.Cases) {
             obj = {
               ...obj,
               [name]: {
@@ -74,24 +74,19 @@ export const setConfirmed = () => dispatch => {
                 Confirmed: item
               }
             };
-          } else {
-            obj[name].Confirmed = {
-              ...item,
-              Cases: obj[name].Confirmed.Cases + item.Cases
-            };
           }
         }
       });
       for (const props in STATE_TO_FIPS) {
         obj = {
-            ...obj,
-            [props]: {
-                ...obj[props],
-                id: STATE_TO_FIPS[props]
-            }
-          
+          ...obj,
+          [props]: {
+            ...obj[props],
+            id: STATE_TO_FIPS[props]
+          }
         };
       }
+      console.log(obj);
       dispatch({
         type: SET_SUMMARY,
         payload: obj
